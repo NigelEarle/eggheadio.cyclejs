@@ -27,7 +27,17 @@ function logDriver(msg$) {
   });
 }
 
-const sinks = main();
+function run(mainFn, drivers) {
+  const sinks = mainFn();
+  Object.keys(drivers)
+  .forEach(driver => {
+    if (sinks[driver]) {
+      drivers[driver](sinks[driver]);
+    }
+  });
+}
 
-domDriver(sinks.DOM);
-logDriver(sinks.log);
+run(main, {
+  DOM: domDriver,
+  log: logDriver
+});
