@@ -1,9 +1,10 @@
 import xs from 'xstream';
 import fromEvent from 'xstream/extra/fromEvent';
+import { run } from '@cycle/run';
 
+// Logic
 const main = sources => {
   const click$ = sources.DOM;
-  // Logic
   return {
     DOM: click$.startWith(null)
       .map(_ => (
@@ -20,8 +21,8 @@ const main = sources => {
 // source = input effect - read
 // sink = output effect - write
 
+// Effects
 const domDriver = text$ => {
-  // Effects
   text$.subscribe({
     next: str => {
       document.querySelector('#app')
@@ -50,12 +51,25 @@ a = g(b)
 fakeA.behaveLike(a)
 */
 
-const run = (mainFn, drivers) => {
-  const fakeDOMsink = xs.create();
-  const domSource = domDriver(fakeDOMsink);
-  const sinks = mainFn({DOM: domSource})
-  fakeDOMsink.imitate(sinks.DOM);
-}
+// const run = (mainFn, drivers) => {
+//   const fakeSinks = {}
+
+//   Object.keys(fakeSinks).forEach(sink => {
+//     fakeSinks[sink] = xs.create();
+//   })
+
+//   const sources = {};
+
+//   Object.keys(drivers).forEach(driver => {
+//     sources[driver] = drivers[driver](fakeSinks[driver])
+//   })
+
+//   const sinks = mainFn(sources);
+
+//   Object.keys(sinks).forEach(key => {
+//     fakeSinks[key].imitate(sinks[key])
+//   })
+// }
 
 run(main, {
   DOM: domDriver,
