@@ -4,7 +4,7 @@ import { run } from '@cycle/run';
 
 // Logic
 const main = sources => {
-  const click$ = sources.DOM;
+  const click$ = sources.DOM.selectEvents('span', 'mouseover');
   return {
     DOM: click$.startWith(null)
       .map(_ => (
@@ -56,7 +56,12 @@ const domDriver = obj$ => {
     }
   });
 
-  const domSource = fromEvent(document, 'click');
+  const domSource = {
+    selectEvents(tagName, eventType) {
+      return fromEvent(document, eventType)
+        .filter(ev => ev.target.tagName === tagName.toUpperCase());
+    }
+  }
   return domSource;
 }
 
