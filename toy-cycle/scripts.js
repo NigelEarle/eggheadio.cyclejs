@@ -2,29 +2,38 @@ import xs from 'xstream';
 import fromEvent from 'xstream/extra/fromEvent';
 import { run } from '@cycle/run';
 
+
+const h1 = children => (
+  {
+    tagName: 'H1',
+    children
+  }
+);
+
+const span = children => (
+  {
+    tagName: 'SPAN',
+    children
+  }
+);
+
 // Logic
 const main = sources => {
-  const click$ = sources.DOM.selectEvents('span', 'mouseover');
+  const mouseover$ = sources.DOM.selectEvents('span', 'mouseover');
   return {
-    DOM: click$.startWith(null)
+    DOM: mouseover$.startWith(null)
       .map(_ => (
         xs.periodic(1000) // stream every x ms
         .fold(prev => prev + 1, 0)
       ))
       .flatten()
-      .map(i => {
-        return {
-          tagName: 'H1',
-          children: [
-            {
-              tagName: 'SPAN',
-              children: [
-                `Seconds elapsed: ${i}`
-              ]
-            }
-          ]
-        }
-      }),
+      .map(i => (
+        h1([
+          span([
+            `Seconds elapsed: ${i}`
+          ])
+        ])
+      )),
     log: xs.periodic(2000)
       .fold(prev => prev + 1, 0)
   }
