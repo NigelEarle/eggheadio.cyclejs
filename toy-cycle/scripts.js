@@ -1,26 +1,26 @@
 import xs from 'xstream';
 import fromEvent from 'xstream/extra/fromEvent';
 import { run } from '@cycle/run';
-import { makeDOMDriver } from '@cycle/dom';
+import { h1, span, makeDOMDriver } from '@cycle/dom';
 
 
-const h1 = children => (
-  {
-    tagName: 'H1',
-    children
-  }
-);
+// const h1 = children => (
+//   {
+//     tagName: 'H1',
+//     children
+//   }
+// );
 
-const span = children => (
-  {
-    tagName: 'SPAN',
-    children
-  }
-);
+// const span = children => (
+//   {
+//     tagName: 'SPAN',
+//     children
+//   }
+// );
 
 // Logic
 const main = sources => {
-  const mouseover$ = sources.DOM.selectEvents('span', 'mouseover');
+  const mouseover$ = sources.DOM.select('span').events('mouseover');
   return {
     DOM: mouseover$.startWith(null)
       .map(_ => (
@@ -44,38 +44,38 @@ const main = sources => {
 // sink = output effect - write
 
 // Effects
-const makeDOMDriver = mountSelector => (
-  obj$ => {
-    const createElement = object => {
-      const element = document.createElement(object.tagName);
-      object.children.forEach(child => {
-        if (typeof child === 'object') {
-          element.appendChild(createElement(child));
-        } else {
-          element.textContent = child;
-        }
-      })
-      return element;
-    }
+// const makeDOMDriver = mountSelector => (
+//   obj$ => {
+//     const createElement = object => {
+//       const element = document.createElement(object.tagName);
+//       object.children.forEach(child => {
+//         if (typeof child === 'object') {
+//           element.appendChild(createElement(child));
+//         } else {
+//           element.textContent = child;
+//         }
+//       })
+//       return element;
+//     }
 
-    obj$.subscribe({
-      next: obj => {
-        const container = document.querySelector(mountSelector)
-        const element = createElement(obj);
-        container.textContent = '';
-        container.appendChild(element);
-      }
-    });
+//     obj$.subscribe({
+//       next: obj => {
+//         const container = document.querySelector(mountSelector)
+//         const element = createElement(obj);
+//         container.textContent = '';
+//         container.appendChild(element);
+//       }
+//     });
 
-    const domSource = {
-      selectEvents(tagName, eventType) {
-        return fromEvent(document, eventType)
-          .filter(ev => ev.target.tagName === tagName.toUpperCase());
-      }
-    }
-    return domSource;
-  }
-)
+//     const domSource = {
+//       selectEvents(tagName, eventType) {
+//         return fromEvent(document, eventType)
+//           .filter(ev => ev.target.tagName === tagName.toUpperCase());
+//       }
+//     }
+//     return domSource;
+//   }
+// )
 
 const logDriver = msg$ => {
   msg$.subscribe({
