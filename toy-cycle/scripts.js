@@ -1,8 +1,12 @@
 function main() {
   // Logic
-  return xs.periodic(1000) // stream every x ms
-    .fold(prev => prev + 1, 0)
-    .map(i => `Seconds elapsed: ${i}`)
+  return {
+    DOM: xs.periodic(1000) // stream every x ms
+      .fold(prev => prev + 1, 0)
+      .map(i => `Seconds elapsed: ${i}`),
+    log: xs.periodic(2000)
+      .fold(prev => prev + 1, 0)
+  }
 }
 
 function domDriver(text$) {
@@ -23,6 +27,7 @@ function logDriver(msg$) {
   });
 }
 
-const sink = main();
-domDriver(sink);
-logDriver(sink)
+const sinks = main();
+
+domDriver(sinks.DOM);
+logDriver(sinks.log);
