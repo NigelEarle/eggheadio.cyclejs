@@ -2,6 +2,22 @@
 # yarn lockfile v1
 
 
+"@cycle/dom@^20.4.0":
+  version "20.4.0"
+  resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-20.4.0.tgz#a309ce7f4ac0df74b7b1876583ccc7349bf99a6a"
+  dependencies:
+    "@cycle/run" "4.0.0"
+    es6-map "^0.1.4"
+    snabbdom "0.7.0"
+    snabbdom-selector "^3.0.0"
+    xstream "11.x"
+
+"@cycle/run@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@cycle/run/-/run-4.0.0.tgz#d48c5133cd783afdf7f9e37ce1c158b570d6c5f1"
+  dependencies:
+    xstream "10.x || 11.x"
+
 "@cycle/run@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@cycle/run/-/run-4.1.0.tgz#b164a83792e85db3c184236f4b3800a4c9bf6f76"
@@ -1449,6 +1465,12 @@ cyclist@~0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
 
+d@1:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/d/-/d-1.0.0.tgz#754bb5bfe55451da69a58b94d45f4c5b0462d58f"
+  dependencies:
+    es5-ext "^0.10.9"
+
 dargs@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/dargs/-/dargs-5.1.0.tgz#ec7ea50c78564cd36c9d5ec18f66329fade27829"
@@ -1644,6 +1666,50 @@ error@^7.0.2:
     string-template "~0.2.1"
     xtend "~4.0.0"
 
+es5-ext@^0.10.35, es5-ext@^0.10.9, es5-ext@~0.10.14:
+  version "0.10.42"
+  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.42.tgz#8c07dd33af04d5dcd1310b5cef13bea63a89ba8d"
+  dependencies:
+    es6-iterator "~2.0.3"
+    es6-symbol "~3.1.1"
+    next-tick "1"
+
+es6-iterator@~2.0.1, es6-iterator@~2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/es6-iterator/-/es6-iterator-2.0.3.tgz#a7de889141a05a94b0854403b2d0a0fbfa98f3b7"
+  dependencies:
+    d "1"
+    es5-ext "^0.10.35"
+    es6-symbol "^3.1.1"
+
+es6-map@^0.1.4:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/es6-map/-/es6-map-0.1.5.tgz#9136e0503dcc06a301690f0bb14ff4e364e949f0"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
+    es6-iterator "~2.0.1"
+    es6-set "~0.1.5"
+    es6-symbol "~3.1.1"
+    event-emitter "~0.3.5"
+
+es6-set@~0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/es6-set/-/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
+    es6-iterator "~2.0.1"
+    es6-symbol "3.1.1"
+    event-emitter "~0.3.5"
+
+es6-symbol@3.1.1, es6-symbol@^3.1.1, es6-symbol@~3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/es6-symbol/-/es6-symbol-3.1.1.tgz#bf00ef4fdab6ba1b46ecb7b629b4c7ed5715cc77"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
+
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -1672,6 +1738,13 @@ estraverse@^4.1.0, estraverse@^4.1.1:
 esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
+
+event-emitter@~0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
 
 events@^1.0.0:
   version "1.1.1"
@@ -3017,6 +3090,10 @@ neo-async@^2.5.0:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.1.tgz#acb909e327b1e87ec9ef15f41b8a269512ad41ee"
 
+next-tick@1:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
+
 nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
@@ -3874,6 +3951,16 @@ slide@^1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
 
+snabbdom-selector@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/snabbdom-selector/-/snabbdom-selector-3.0.0.tgz#787011a5e89e8b1fa2fb768d4bb52a84396714ec"
+  dependencies:
+    tree-selector "^1.1.0"
+
+snabbdom@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/snabbdom/-/snabbdom-0.7.0.tgz#c09e2baa0f8d43d306a3aa7502b62fdde2b4154e"
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -4194,6 +4281,10 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
+tree-selector@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/tree-selector/-/tree-selector-1.1.0.tgz#e47bbb7174b3040328d04da6c80fcabf8819b129"
+
 trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
@@ -4492,7 +4583,7 @@ write-file-atomic@^1.2.0:
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
-"xstream@10.x || 11.x", xstream@^11.2.0:
+"xstream@10.x || 11.x", xstream@11.x, xstream@^11.2.0:
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/xstream/-/xstream-11.2.0.tgz#4acb83211fa2edcd890e36f7a7ed02caee2339b5"
   dependencies:

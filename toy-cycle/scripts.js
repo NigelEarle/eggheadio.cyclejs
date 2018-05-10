@@ -1,6 +1,7 @@
 import xs from 'xstream';
 import fromEvent from 'xstream/extra/fromEvent';
 import { run } from '@cycle/run';
+import { makeDOMDriver } from '@cycle/dom';
 
 
 const h1 = children => (
@@ -43,36 +44,38 @@ const main = sources => {
 // sink = output effect - write
 
 // Effects
-const domDriver = obj$ => {
-  const createElement = object => {
-    const element = document.createElement(object.tagName);
-    object.children.forEach(child => {
-      if (typeof child === 'object') {
-        element.appendChild(createElement(child));
-      } else {
-        element.textContent = child;
+const makeDOMDriver = mountSelector => (
+  obj$ => {
+    const createElement = object => {
+      const element = document.createElement(object.tagName);
+      object.children.forEach(child => {
+        if (typeof child === 'object') {
+          element.appendChild(createElement(child));
+        } else {
+          element.textContent = child;
+        }
+      })
+      return element;
+    }
+
+    obj$.subscribe({
+      next: obj => {
+        const container = document.querySelector(mountSelector)
+        const element = createElement(obj);
+        container.textContent = '';
+        container.appendChild(element);
       }
-    })
-    return element;
-  }
+    });
 
-  obj$.subscribe({
-    next: obj => {
-      const container = document.querySelector('#app')
-      const element = createElement(obj);
-      container.textContent = '';
-      container.appendChild(element);
+    const domSource = {
+      selectEvents(tagName, eventType) {
+        return fromEvent(document, eventType)
+          .filter(ev => ev.target.tagName === tagName.toUpperCase());
+      }
     }
-  });
-
-  const domSource = {
-    selectEvents(tagName, eventType) {
-      return fromEvent(document, eventType)
-        .filter(ev => ev.target.tagName === tagName.toUpperCase());
-    }
+    return domSource;
   }
-  return domSource;
-}
+)
 
 const logDriver = msg$ => {
   msg$.subscribe({
@@ -92,6 +95,6 @@ fakeA.behaveLike(a)
 */
 
 run(main, {
-  DOM: domDriver,
+  DOM: makeDOMDriver('#app'),
   log: logDriver
 });
