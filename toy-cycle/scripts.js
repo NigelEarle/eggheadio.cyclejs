@@ -12,7 +12,19 @@ const main = sources => {
         .fold(prev => prev + 1, 0)
       ))
       .flatten()
-      .map(i => `Seconds elapsed: ${i}`),
+      .map(i => {
+        return {
+          tagName: 'H1',
+          children: [
+            {
+              tagName: 'SPAN',
+              children: [
+                `Seconds elapsed: ${i}`
+              ]
+            }
+          ]
+        }
+      }),
     log: xs.periodic(2000)
       .fold(prev => prev + 1, 0)
   }
@@ -22,11 +34,25 @@ const main = sources => {
 // sink = output effect - write
 
 // Effects
-const domDriver = text$ => {
-  text$.subscribe({
-    next: str => {
-      document.querySelector('#app')
-      .textContent = str
+const domDriver = obj$ => {
+  const createElement = object => {
+    const element = document.createElement(object.tagName);
+    object.children.forEach(child => {
+      if (typeof child === 'object') {
+        element.appendChild(createElement(child));
+      } else {
+        element.textContent = child;
+      }
+    })
+    return element;
+  }
+
+  obj$.subscribe({
+    next: obj => {
+      const container = document.querySelector('#app')
+      const element = createElement(obj);
+      container.textContent = '';
+      container.appendChild(element);
     }
   });
 
@@ -50,26 +76,6 @@ b = f(fakeA)
 a = g(b)
 fakeA.behaveLike(a)
 */
-
-// const run = (mainFn, drivers) => {
-//   const fakeSinks = {}
-
-//   Object.keys(fakeSinks).forEach(sink => {
-//     fakeSinks[sink] = xs.create();
-//   })
-
-//   const sources = {};
-
-//   Object.keys(drivers).forEach(driver => {
-//     sources[driver] = drivers[driver](fakeSinks[driver])
-//   })
-
-//   const sinks = mainFn(sources);
-
-//   Object.keys(sinks).forEach(key => {
-//     fakeSinks[key].imitate(sinks[key])
-//   })
-// }
 
 run(main, {
   DOM: domDriver,
