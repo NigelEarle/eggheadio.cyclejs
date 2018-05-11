@@ -1,39 +1,52 @@
 import xs from 'xstream';
 import { run } from '@cycle/run';
+import { makeHTTPDriver } from '@cycle/http';
 import {
   div,
   label,
   button,
   p,
+  h1,
+  h4,
+  a,
   makeDOMDriver
 } from '@cycle/dom';
 
-// Logic
+// button clicked READ
+// request sent WRITE
+// response recieved READ
+// data displayed WRITE
+
 const main = sources => {
-  const decClick$ = sources.DOM.select('.dec').events('click');
-  const incClick$ = sources.DOM.select('.inc').events('click');
+  const click$ = sources.DOM.select('.get-first').events('click');
+  const request$ = click$.map(event => {
+    return {
+      url: 'http://jsonplaceholder.typicode.com/users/1',
+      method: 'GET',
+      category: 'user-data'
+    }
+  })
 
-  const dec$ = decClick$.map(_ => - 1);
-  const inc$ = incClick$.map(_ => + 1);
+  const response$ = sources.HTTP.select('user-data').flatten().map(res => res.body);
 
-  const delta$ = xs.merge(dec$, inc$);
-  const number$ = delta$.fold((prev, curr) => prev + curr, 0);
+  const vDom$ = response$.startWith({}).map(response => (
+    div([
+      button('.get-first', 'Get first user'),
+      div('.user-details', [
+        h1('.user-name', response.name),
+        h4('.user-email', response.email),
+        a('.user-website', {attrs: {href: response.website}}, response.website)
+      ])
+    ])
+  ));
 
   return {
-    DOM: number$.map(number => (
-        div([
-          button('.dec', 'Decrement'),
-          button('.inc', 'Increment'),
-          p([
-            label(`Count: ${number}`)
-          ])
-
-        ])
-      )
-    )
+    DOM: vDom$,
+    HTTP: request$
   }
 }
 
 run(main, {
-  DOM: makeDOMDriver('#app')
+  DOM: makeDOMDriver('#app'),
+  HTTP: makeHTTPDriver(),
 });
