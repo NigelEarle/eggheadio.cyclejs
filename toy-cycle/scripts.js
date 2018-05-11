@@ -4,45 +4,44 @@ import { makeHTTPDriver } from '@cycle/http';
 import {
   div,
   label,
-  button,
-  p,
-  h1,
-  h4,
-  a,
+  input,
+  h2,
   makeDOMDriver
 } from '@cycle/dom';
 
-// button clicked READ
-// request sent WRITE
-// response recieved READ
-// data displayed WRITE
+// detect sliding event - READ
+// recalculate BMI = w / h*h - LOGIC
+// display BMI - WRITE
 
 const main = sources => {
-  const click$ = sources.DOM.select('.get-first').events('click');
-  const request$ = click$.map(event => {
-    return {
-      url: 'http://jsonplaceholder.typicode.com/users/1',
-      method: 'GET',
-      category: 'user-data'
-    }
-  })
+  const changeWeight$ = sources.DOM.select('.weight').events('input')
+    .map(ev => ev.target.value);
+  const changeHeight$ = sources.DOM.select('.height').events('input')
+    .map(ev => ev.target.value);
 
-  const response$ = sources.HTTP.select('user-data').flatten().map(res => res.body);
+  const state$ = xs.combine(changeWeight$.startWith(230), changeHeight$.startWith(182))
+    .map(([weight, height]) => {
+      const heightMeters = height * 0.01;
+      const bmi$ = Math.round(weight / (heightMeters * heightMeters));
+      return { bmi: bmi$, weight, height };
+    })
 
-  const vDom$ = response$.startWith({}).map(response => (
-    div([
-      button('.get-first', 'Get first user'),
-      div('.user-details', [
-        h1('.user-name', response.name),
-        h4('.user-email', response.email),
-        a('.user-website', {attrs: {href: response.website}}, response.website)
+  const vDom$ = state$.map(state => (
+      div([
+        div([
+          label(`Weight: ${state.weight}kg`),
+          input('.weight', {attrs: {type: 'range', min: 40, max: 150, value: 400}})
+        ]),
+        div([
+          label(`Height: ${state.height}cm`),
+          input('.height', {attrs:{ type: 'range', min: 150, max: 220, value: 400}})
+        ]),
+        h2(`BMI is ${state.bmi}`)
       ])
-    ])
-  ));
-
+    )
+  )
   return {
-    DOM: vDom$,
-    HTTP: request$
+    DOM: vDom$
   }
 }
 
