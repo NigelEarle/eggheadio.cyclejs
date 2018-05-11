@@ -3,29 +3,33 @@ import { run } from '@cycle/run';
 import {
   div,
   label,
-  input,
-  hr,
-  h1,
+  button,
+  p,
   makeDOMDriver
 } from '@cycle/dom';
 
 // Logic
 const main = sources => {
-  const inputEv$ = sources.DOM.select('.field').events('input');
-  const name$ = inputEv$.map(ev => ev.target.value).startWith('');
+  const decClick$ = sources.DOM.select('.dec').events('click');
+  const incClick$ = sources.DOM.select('.inc').events('click');
+
+  const dec$ = decClick$.map(_ => - 1);
+  const inc$ = incClick$.map(_ => + 1);
+
+  const delta$ = xs.merge(dec$, inc$);
+  const number$ = delta$.fold((prev, curr) => prev + curr, 0);
 
   return {
-    DOM: name$.map(name =>
-      div ([
-        label(['Name']),
-        input('.field', {
-          attrs: {
-            type: 'text'
-          }
-        }),
-        hr(),
-        h1(`Hello ${name}!`)
-      ])
+    DOM: number$.map(number => (
+        div([
+          button('.dec', 'Decrement'),
+          button('.inc', 'Increment'),
+          p([
+            label(`Count: ${number}`)
+          ])
+
+        ])
+      )
     )
   }
 }
