@@ -1,6 +1,5 @@
 import xs from 'xstream';
 import { run } from '@cycle/run';
-import { makeHTTPDriver } from '@cycle/http';
 import {
   div,
   label,
@@ -14,46 +13,43 @@ import {
 // display BMI - WRITE
 
 const intent = (domSource) => {
-  const changeWeight$ = domSource.DOM.select('.weight').events('input')
-    .map(ev => ev.target.value);
-  const changeHeight$ = domSource.DOM.select('.height').events('input')
+  const changeValue$ = domSource.select('.slider').events('input')
     .map(ev => ev.target.value);
 
-  return {
-    changeWeight$,
-    changeHeight$
-  }
+  return { changeValue$ }
 };
 
-const model = (actions) => {
-  const { changeWeight$, changeHeight$ } = actions;
-  return xs.combine(changeWeight$.startWith(230), changeHeight$.startWith(182))
-    .map(([weight, height]) => {
-      const heightMeters = height * 0.01;
-      const bmi$ = Math.round(weight / (heightMeters * heightMeters));
-      return { bmi: bmi$, weight, height };
-    });
+const model = (actions, props$) => {
+  const { changeValue$ } = actions;
+  return props$.map(props => {
+    return changeValue$.startWith(props.init)
+    .map(value => {
+      return {
+        value: value,
+        label: props.label,
+        unit: props.unit,
+        max: props.max,
+        min: props.min
+      }
+    })
+  }).flatten();
 }
 
 const view = (state$) => {
   return state$.map(state => (
     div([
       div([
-        label(`Weight: ${state.weight}kg`),
-        input('.weight', {attrs: {type: 'range', min: 40, max: 150, value: 400}})
+        label('.label', `${state.label}: ${state.value}${state.unit}`),
+        input('.slider', {attrs: {type: 'range', min: state.min, max: state.max, value: state.value}})
       ]),
-      div([
-        label(`Height: ${state.height}cm`),
-        input('.height', {attrs:{ type: 'range', min: 150, max: 220, value: 400}})
-      ]),
-      h2(`BMI is ${state.bmi}`)
     ])
   ));
 }
 
 const main = sources => {
-  const actions = intent(sources);
-  const state$ = model(actions);
+  const props$ = sources.props;
+  const actions = intent(sources.DOM);
+  const state$ = model(actions, props$);
   const vDom$ = view(state$)
   return {
     DOM: vDom$
@@ -62,5 +58,11 @@ const main = sources => {
 
 run(main, {
   DOM: makeDOMDriver('#app'),
-  HTTP: makeHTTPDriver(),
+  props: () => xs.of({
+    label: 'Height',
+    unit: 'cm',
+    min: 40,
+    max: 140,
+    init: 40
+  })
 });
