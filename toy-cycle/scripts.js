@@ -13,33 +13,48 @@ import {
 // recalculate BMI = w / h*h - LOGIC
 // display BMI - WRITE
 
-const main = sources => {
-  const changeWeight$ = sources.DOM.select('.weight').events('input')
+const intent = (domSource) => {
+  const changeWeight$ = domSource.DOM.select('.weight').events('input')
     .map(ev => ev.target.value);
-  const changeHeight$ = sources.DOM.select('.height').events('input')
+  const changeHeight$ = domSource.DOM.select('.height').events('input')
     .map(ev => ev.target.value);
 
-  const state$ = xs.combine(changeWeight$.startWith(230), changeHeight$.startWith(182))
+  return {
+    changeWeight$,
+    changeHeight$
+  }
+};
+
+const model = (actions) => {
+  const { changeWeight$, changeHeight$ } = actions;
+  return xs.combine(changeWeight$.startWith(230), changeHeight$.startWith(182))
     .map(([weight, height]) => {
       const heightMeters = height * 0.01;
       const bmi$ = Math.round(weight / (heightMeters * heightMeters));
       return { bmi: bmi$, weight, height };
-    })
+    });
+}
 
-  const vDom$ = state$.map(state => (
+const view = (state$) => {
+  return state$.map(state => (
+    div([
       div([
-        div([
-          label(`Weight: ${state.weight}kg`),
-          input('.weight', {attrs: {type: 'range', min: 40, max: 150, value: 400}})
-        ]),
-        div([
-          label(`Height: ${state.height}cm`),
-          input('.height', {attrs:{ type: 'range', min: 150, max: 220, value: 400}})
-        ]),
-        h2(`BMI is ${state.bmi}`)
-      ])
-    )
-  )
+        label(`Weight: ${state.weight}kg`),
+        input('.weight', {attrs: {type: 'range', min: 40, max: 150, value: 400}})
+      ]),
+      div([
+        label(`Height: ${state.height}cm`),
+        input('.height', {attrs:{ type: 'range', min: 150, max: 220, value: 400}})
+      ]),
+      h2(`BMI is ${state.bmi}`)
+    ])
+  ));
+}
+
+const main = sources => {
+  const actions = intent(sources);
+  const state$ = model(actions);
+  const vDom$ = view(state$)
   return {
     DOM: vDom$
   }

@@ -4,6 +4,7 @@
   "description": "",
   "main": "scripts.js",
   "scripts": {
+    "start": "webpack && live-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
