@@ -20,6 +20,7 @@
     "xstream": "^11.2.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "webpack-cli": "^2.1.3"
   }
 }

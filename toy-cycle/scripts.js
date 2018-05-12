@@ -46,7 +46,7 @@ const view = (state$) => {
   ));
 }
 
-const main = sources => {
+const labeledSlider = sources => {
   const props$ = sources.props;
   const actions = intent(sources.DOM);
   const state$ = model(actions, props$);
@@ -56,13 +56,18 @@ const main = sources => {
   }
 }
 
-run(main, {
-  DOM: makeDOMDriver('#app'),
-  props: () => xs.of({
+const main = (sources) => {
+  const props$ = xs.of({
     label: 'Height',
     unit: 'cm',
     min: 40,
     max: 140,
     init: 40
   })
+  const sinks = labeledSlider({ ...sources, props: props$ });
+  return sinks;
+}
+
+run(main, {
+  DOM: makeDOMDriver('#app')
 });
