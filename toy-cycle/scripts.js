@@ -7,6 +7,7 @@ import {
   h2,
   makeDOMDriver
 } from '@cycle/dom';
+import isolate from '@cycle/isolate';
 
 // detect sliding event - READ
 // recalculate BMI = w / h*h - LOGIC
@@ -65,18 +66,12 @@ const main = (sources) => {
     max: 140,
     init: 40
   });
-  const weightDOMSource = sources.DOM.select('.weight');
-  const weightSinks = labeledSlider({
+  const weightSlider = isolate(labeledSlider, '.weight');
+  const weightSinks = weightSlider({
     ...sources,
-    DOM: weightDOMSource,
     props: weightProps$ 
   });
 
-  const weightVDOM$ = weightSinks.DOM.map(vdom => {
-    vdom.sel += '.weight';
-    return vdom;
-  })
-  
   const heightProps$ = xs.of({
     label: 'Height',
     unit: 'kg',
@@ -84,19 +79,13 @@ const main = (sources) => {
     max: 140,
     init: 90
   });
-  const heightDOMSource = sources.DOM.select('.height');
-  
-  const heightSinks = labeledSlider({ 
+  const heightSlider = isolate(labeledSlider, '.height');
+  const heightSinks = heightSlider({ 
     ...sources,
-    DOM: heightDOMSource,
     props: heightProps$ 
   })
-  
-  const heightVDOM$ = heightSinks.DOM.map(vdom => {
-    vdom.sel += '.height';
-    return vdom;
-  });
-  const vdom$ = xs.combine(weightVDOM$, heightVDOM$)
+
+  const vdom$ = xs.combine(weightSinks.DOM, heightSinks.DOM)
     .map(([weightVDOM, heightVDOM]) => (
       div([
         weightVDOM,
